@@ -32,4 +32,14 @@ def preprocess_image(data_url):
         x, y, w, h = cv2.boundingRect(coords)
         arr = arr[y:y+h, x:x+w]
 
-    
+    arr = cv2.resize(arr, (28, 28), interpolation=cv2.INTER_AREA)
+    blank = np.zeros((28, 28), dtype=np.uint8)
+
+    x_offset = (28 - arr.shape[1]) // 2
+    y_offset = (28 - arr.shape[0]) // 2
+
+    blank[y_offset:y_offset+arr.shape[0], x_offset:x_offset+arr.shape[1]] = arr
+
+    blank = blank.astype('float32') / 255.0
+    blank = blank.reshape(1, 28, 28, 1)
+    return blank
