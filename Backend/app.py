@@ -54,3 +54,32 @@ def home():
         }
     })
 
+@app.route('/predict', methods=['POST'])
+def predict():
+    try:
+        data = request.get_json()
+        if not data or 'image' not in data:
+            return jsonify({"status": "error", "message": "No image provided."}), 400
+
+        processed = preprocess_image(data['image'])
+        prediction = model.predict(processed, verbose=0)
+        predicted_digit = int(np.argmax(prediction[0]))
+        confidence = float(np.max(prediction[0]) * 100)
+
+        top3_idx = np.argsort(prediction[0])[-3:][::-1]
+        top3 = [
+            {"digit": int(i), "confidence": round(float(prediction[0][i]) * 100, 2)} 
+            for i in top3_idx
+        ]
+
+        return jsonify({
+            "digit": predicted_digit,
+            "confidence": round(confidence, 2),
+            "top3": top3
+        }), 200
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
