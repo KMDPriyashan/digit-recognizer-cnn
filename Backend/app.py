@@ -43,3 +43,14 @@ def preprocess_image(data_url):
     blank = blank.astype('float32') / 255.0
     blank = blank.reshape(1, 28, 28, 1)
     return blank
+
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({
+        "status": "success",
+        "message": "Digit Recognition API is running.",
+        "Endpoints": {
+            "POST /predict": "Send {'image': 'data:image/png;base64,...'} to get the predicted digit."
+        }
+    })
+
