@@ -1,0 +1,155 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    max-width: 500px;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    padding: 35px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+h1 {
+    color: #1e3c72;
+    font-size: 1.9rem;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.canvas-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+canvas {
+    background: #ffffff;
+    border: 3px solid #1e3c72;
+    border-radius: 12px;
+    cursor: crosshair;
+    touch-action: none; /* Browser scroll prevent කරන්න */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+button {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.primary {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+}
+
+.secondary {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.result {
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    background: #f0f4ff;
+    border-left: 6px solid #1e3c72;
+    animation: fadeIn 0.4s ease;
+}
+
+.predicted-digit {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #1e3c72;
+    line-height: 1;
+}
+
+.confidence {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 8px;
+}
+
+.top3 {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.top3 span {
+    background: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.error {
+    margin-top: 15px;
+    padding: 12px;
+    background: #ffebee;
+    border-left: 4px solid #f44336;
+    border-radius: 8px;
+    color: #c62828;
+    font-size: 0.9rem;
+}
+
+.hidden {
+    display: none;
+}
+
+footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #999;
+    font-size: 0.8rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
