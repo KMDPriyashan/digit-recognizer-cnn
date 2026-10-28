@@ -11,3 +11,12 @@ let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 
+//canvas setup
+
+ctx.fillStyle = 'black';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = 'white';
+ctx.lineWidth = 20;
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+
