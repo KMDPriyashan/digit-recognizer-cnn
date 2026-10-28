@@ -10,30 +10,39 @@ const errorDiv = document.getElementById('error');
 let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
+let hasDrawing = false;
 
-//canvas setup
+function clearCanvas() {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    hasDrawing = false;
+}
 
-ctx.fillStyle = 'black';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-ctx.fillStyle = 'white';
+clearCanvas();
+ctx.strokeStyle = '#111111';
 ctx.lineWidth = 20;
 ctx.lineCap = 'round';
 ctx.lineJoin = 'round';
 
-//drowing logic
 canvas.addEventListener('pointerdown', (e) => {
     isDrawing = true;
     const rect = canvas.getBoundingClientRect();
-    lastX = e.clientX - rect.left;
-    lastY = e.clientY - rect.top;
+    lastX = (e.clientX - rect.left) * canvas.width / rect.width;
+    lastY = (e.clientY - rect.top) * canvas.height / rect.height;
+    hasDrawing = true;
     canvas.setPointerCapture(e.pointerId);
+
+    ctx.beginPath();
+    ctx.arc(lastX, lastY, ctx.lineWidth / 2, 0, Math.PI * 2);
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.fill();
 });
 
 canvas.addEventListener('pointermove', (e) => {
     if (!isDrawing) return;
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = (e.clientX - rect.left) * canvas.width / rect.width;
+    const y = (e.clientY - rect.top) * canvas.height / rect.height;
 
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
@@ -44,45 +53,30 @@ canvas.addEventListener('pointermove', (e) => {
     lastY = y;
 });
 
-canvas.addEventListener('pointerup', () => {
+function finishDrawing(e) {
     isDrawing = false;
-    canvas.releasePointerCapture(e.pointerId);
-});
+    if (canvas.hasPointerCapture(e.pointerId)) {
+        canvas.releasePointerCapture(e.pointerId);
+    }
+}
 
-canvas.addEventListener('pointercancel', () => {
-    isDrawing = false;
-    canvas.releasePointerCapture(e.pointerId);
-});
+canvas.addEventListener('pointerup', finishDrawing);
+canvas.addEventListener('pointercancel', finishDrawing);
 
-//clear buutten
-clearBtn.addEventListener('click', () => {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+clearButton.addEventListener('click', () => {
+    clearCanvas();
     resultDiv.classList.add('hidden');
     errorDiv.classList.add('hidden');
 });
 
-//predict button
-predictBtn.addEventListener('click', async () => {
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height); 
-    const pixels = imageData.data;
-    let hashDrawing = false;
-
-    for (let i = 0; i < pixels.length; i += 160) {
-        if(pixels[i] < 250 || pixels[i + 1] < 250 || pixels[i + 2] < 250) {
-            hashDrawing = true;
-            break;
-        }
-    }
-
-    if (!hashDrawing) {
+predictButton.addEventListener('click', async () => {
+    if (!hasDrawing) {
         showError('Please draw a digit before predicting.');
         return;
     }
 
-    //loading state
-    predictBtn.disabled = true;
-    predictBtn.textContent = 'Predicting...';
+    predictButton.disabled = true;
+    predictButton.textContent = 'Predicting...';
     resultDiv.classList.add('hidden');
     errorDiv.classList.add('hidden');
 
@@ -97,8 +91,8 @@ predictBtn.addEventListener('click', async () => {
         });
 
         if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.error || 'Prediction failed');
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || err.message || 'Prediction failed');
         }
 
         const data = await response.json();
@@ -107,8 +101,8 @@ predictBtn.addEventListener('click', async () => {
     }catch (err) {
         showError(err.message || 'Cannot connect to server. Is backend running?');
     }finally {
-        predictBtn.disabled = false;
-        predictBtn.textContent = 'Predict';
+        predictButton.disabled = false;
+        predictButton.textContent = 'Predict';
     }
 });
 
