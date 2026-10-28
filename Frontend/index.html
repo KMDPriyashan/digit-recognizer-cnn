@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digit Recognizer | CNN + Canvas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🔖 Digit Recognizer</h1>
+            <p class="subtitle">Draw a digit (0-9) and let the CNN guess it!</p>
+        </header>
+
+        <main>
+            <div class="canvas-wrapper">
+                <canvas id="drawCanvas" width="280" height="280"></canvas>
+            </div>
+            <div class="controls">
+                <button id="predictBtn" class="primary">🔍 Predict</button>
+                <button id="clearBtn" class="secondary">🗑️ Clear</button>
+            </div>
+            <div id="result" class="result hidden">
+                <div class="predicted-digit" id="predictedDigit">-</div>
+                <div class="confidence" id="confidence">-</div>
+                <div class="top3" id="top3"></div>
+            </div>
+            <div id="error" class="error hidden"></div>
+
+        </main>
+        <footer>
+            <p>CNN trained on MNIST • Flask + TensorFlow + Vanilla JS</p>
+        </footer>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

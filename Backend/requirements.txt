@@ -1,7 +1,7 @@
 Flask==3.0.0
 flask-cors==4.0.0
-tensorflow==2.15.0
+tensorflow
 numpy>=2.3
-opencv-python-headless==4.9.0.80
-Pillow==10.2.0
+opencv-python-headless
+Pillow>=11.0.0
 gunicorn==21.2.0
