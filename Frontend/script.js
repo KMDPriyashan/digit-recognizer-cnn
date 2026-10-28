@@ -54,3 +54,60 @@ canvas.addEventListener('pointercancel', () => {
     canvas.releasePointerCapture(e.pointerId);
 });
 
+//clear buutten
+clearBtn.addEventListener('click', () => {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    resultDiv.classList.add('hidden');
+    errorDiv.classList.add('hidden');
+});
+
+//predict button
+predictBtn.addEventListener('click', async () => {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height); 
+    const pixels = imageData.data;
+    let hashDrawing = false;
+
+    for (let i = 0; i < pixels.length; i += 160) {
+        if(pixels[i] < 250 || pixels[i + 1] < 250 || pixels[i + 2] < 250) {
+            hashDrawing = true;
+            break;
+        }
+    }
+
+    if (!hashDrawing) {
+        showError('Please draw a digit before predicting.');
+        return;
+    }
+
+    //loading state
+    predictBtn.disabled = true;
+    predictBtn.textContent = 'Predicting...';
+    resultDiv.classList.add('hidden');
+    errorDiv.classList.add('hidden');
+
+    try{
+        const dataURL = canvas.toDataURL('image/png');
+        const response = await fetch(`${API_URL}/predict`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: dataURL })
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || 'Prediction failed');
+        }
+
+        const data = await response.json();
+        showResult(data);
+
+    }catch (err) {
+        showError(err.message || 'Cannot connect to server. Is backend running?');
+    }finally {
+        predictBtn.disabled = false;
+        predictBtn.textContent = 'Predict';
+    }
+});
