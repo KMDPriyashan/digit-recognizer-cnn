@@ -111,3 +111,19 @@ predictBtn.addEventListener('click', async () => {
         predictBtn.textContent = 'Predict';
     }
 });
+
+function showResult(data) {
+    document.getElementById('predictedDigit').textContent = data.digit;
+    document.getElementById('confidence').textContent = `Confidence: ${data.confidence}%`;
+
+    const top3Html = data.top3.map(item => 
+        `<span>${item.digit}: ${item.confidence}%</span>`
+    ).join('');
+    document.getElementById('top3').innerHTML = top3Html;
+    resultDiv.classList.remove('hidden');
+}
+
+function showError(message) {
+    errorDiv.textContent = message;
+    errorDiv.classList.remove('hidden');
+}
